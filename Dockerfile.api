@@ -1,0 +1,31 @@
+# Dockerfile.api -- SMB Intelligence FastAPI Backend
+FROM python:3.11-slim
+
+LABEL maintainer="SMB Intelligence Team"
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir \
+    fastapi>=0.110.0 \
+    uvicorn[standard]>=0.29.0 \
+    pydantic>=2.6.0 \
+    python-dotenv>=1.0.0 \
+    pandas>=2.2.0 \
+    numpy>=1.26.0
+
+COPY src/ ./src/
+COPY data/output/ ./data/output/
+
+ENV MOCK_MODE=false
+ENV API_PORT=8000
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONIOENCODING=utf-8
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
