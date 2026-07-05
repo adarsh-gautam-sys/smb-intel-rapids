@@ -1,31 +1,21 @@
 version: "3.9"
-
 services:
   api:
     build:
       context: .
       dockerfile: Dockerfile.api
     image: smb-intelligence-api:latest
-    container_name: smb-api
+    container_name: smb_api
     ports:
-      - "${API_PORT:-8000}:8000"
+      - "8000:8000"
     environment:
       - MOCK_MODE=${MOCK_MODE:-false}
+      - API_PORT=8000
       - GCP_PROJECT_ID=${GCP_PROJECT_ID:-}
       - BIGQUERY_DATASET=${BIGQUERY_DATASET:-smb_intelligence}
-      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-}
-      - PYTHONIOENCODING=utf-8
-    volumes:
-      - ./data/output:/app/data/output:ro
-      - ./credentials:/app/credentials:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
     restart: unless-stopped
-
-networks:
-  default:
-    name: smb-intelligence-net
