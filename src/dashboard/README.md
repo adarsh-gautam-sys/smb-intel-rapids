@@ -1,11 +1,22 @@
 # SMB Intelligence Dashboard
-Stitch-generated UI — see individual HTML files for each page.
+Stitch MCP generated UI — 4 pages, all fixed and linked.
 
-Pages:
-- index.html     — Overview (KPIs, GPU card, alerts, risk donut)
-- skus.html      — SKU Intelligence (table, search, drawer)
-- cashflow.html  — Cash Flow (24-month stacked bars, 30d forecast)
-- benchmark.html — Benchmark (GPU speedup hero, RAPIDS explainer)
+## Pages
+| File | Route | Active Tab |
+|------|-------|------------|
+| index.html | /dashboard/index.html | Overview |
+| skus.html | /dashboard/skus.html | SKU Intelligence |
+| cashflow.html | /dashboard/cashflow.html | Cash Flow |
+| benchmark.html | /dashboard/benchmark.html | Benchmark |
 
-Design system: Lumina Intelligence (dark navy #0A0F1E)
-Data: fetches from http://localhost:8000/api/*
+## Nav Links
+All 4 tabs are wired in every page. Click any tab to navigate.
+
+## API Integration
+- `window.API_BASE` auto-detects localhost vs Cloud Run
+- All fetch() calls use `API_BASE + '/api/...'`
+- Graceful fallback to mock data if API unreachable
+
+## Cloud Run
+Served as static files from FastAPI at `/dashboard/`.
+Root URL `/` redirects to `/dashboard/index.html`.
